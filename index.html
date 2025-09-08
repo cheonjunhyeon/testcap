@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>AWS 통신 테스트</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        button { font-size: 18px; padding: 10px 20px; cursor: pointer; }
+        #response { margin-top: 20px; font-weight: bold; color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>게더타운 AWS 연동 테스트</h1>
+    <button onclick="callAWS()">AWS 서버에 내 정보 보내기</button>
+    <p id="response">버튼을 눌러주세요...</p>
+
+    <script>
+        async function callAWS() {
+            // ⭐ 여기에 1단계에서 준비한 나의 AWS API Gateway "호출 URL"을 붙여넣으세요.
+            const aws_url = "arn:aws:apigateway:ap-northeast-2::/apis/9laie8hiv1/routes/u8s0sx6";
+            
+            const responseElement = document.getElementById('response');
+            responseElement.textContent = "서버에 요청 중...";
+
+            try {
+                // AWS로 보낼 데이터 (실제로는 Gather에서 플레이어 정보를 받아와야 함)
+                const postData = {
+                    playerName: "GatherTown User" // 테스트용 이름
+                };
+
+                const response = await fetch(aws_url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData)
+                });
+
+                const data = await response.json();
+                
+                // 성공 응답을 화면에 표시
+                responseElement.textContent = data.message;
+                responseElement.style.color = '#27ae60'; // 녹색
+
+            } catch (error) {
+                // 실패 응답을 화면에 표시
+                responseElement.textContent = "통신 실패: " + error.message;
+                responseElement.style.color = '#c0392b'; // 빨간색
+            }
+        }
+    </script>
+</body>
+</html>
